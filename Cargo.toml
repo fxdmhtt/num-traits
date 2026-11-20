@@ -19,12 +19,14 @@ rust-version = "1.60"
 features = ["std"]
 rustdoc-args = ["--generate-link-to-definition"]
 
-[dependencies]
-libm = { version = "0.2.0", optional = true }
-
 [features]
 default = ["std"]
-libm = ["dep:libm"]
+# The name is kept, the dependency is not: `Float` itself is gated on
+# `any(std, libm)` (src/lib.rs, src/float.rs, src/real.rs, src/pow.rs), and
+# consumers reach `f32: RealField` through it. What it now means is "provide
+# `Float` without `std`", backed by the target's float intrinsics and its C
+# library's mathlib instead of a Rust `libm` crate.
+libm = []
 std = []
 
 # vestigial features, now always in effect

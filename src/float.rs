@@ -7,6 +7,12 @@ use core::f64;
 
 use crate::{Num, NumCast, ToPrimitive};
 
+// `libm` is no longer a dependency. This binds the name to the crate-local
+// stand-in, so every forwarding row below stays byte-identical to upstream —
+// which is what keeps a rebase onto a newer num-traits free of conflicts here.
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+use crate::libm_compat as libm;
+
 /// Generic trait for floating point numbers that works with `no_std`.
 ///
 /// This trait implements a subset of the `Float` trait.

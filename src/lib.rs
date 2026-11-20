@@ -17,6 +17,10 @@
 #![doc(html_root_url = "https://docs.rs/num-traits/0.2")]
 #![deny(unconditional_recursion)]
 #![no_std]
+// `core::f32::math` / `core::f64::math` are unstable, and only the without-std
+// float impls reach them. `cfg_attr` rather than a bare `#![feature]` keeps this
+// crate buildable on stable for everyone who uses `std`.
+#![cfg_attr(not(feature = "std"), feature(core_float_math))]
 
 // Need to explicitly bring the crate in for inherent float methods
 #[cfg(feature = "std")]
@@ -57,6 +61,10 @@ pub mod cast;
 pub mod float;
 pub mod identities;
 pub mod int;
+// The stand-in for the `libm` crate, which is no longer a dependency. Private:
+// `float.rs` is its only consumer.
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+mod libm_compat;
 pub mod ops;
 pub mod pow;
 pub mod real;
